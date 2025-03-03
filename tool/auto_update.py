@@ -72,7 +72,6 @@ def main():
     latest_sha = get_latest_commit_sha()
     if not latest_sha:
         return
-
     local_sha = load_local_sha()
 
     if latest_sha != local_sha:
