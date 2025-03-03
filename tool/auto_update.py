@@ -4,8 +4,6 @@ import requests, os, json
 OWNER = "Tejo29749"  # 仓库所有者
 REPO = "autoupdatetest"  # 仓库名
 BRANCH = "main"  # 分支名
-# GitHub API URLs
-LATEST_COMMIT_URL = f"https://api.github.com/repos/{OWNER}/{REPO}/commits/{BRANCH}"
 
 # 获取脚本所在目录的上一级路径,并确保路径是绝对路径
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,8 +12,9 @@ DOWNLOAD_DIR = os.path.abspath(os.path.join(script_dir, ".."))
 
 def get_latest_commit_sha():
     # 获取最新的 commit SHA
+    latest_commit_url = f"https://api.github.com/repos/{OWNER}/{REPO}/commits/{BRANCH}"
     try:
-        response = requests.get(LATEST_COMMIT_URL)
+        response = requests.get(latest_commit_url)
         if response.status_code == 200:
             return response.json()["sha"]
         else:
