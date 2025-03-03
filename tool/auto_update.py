@@ -77,14 +77,11 @@ def main():
     local_sha = load_local_sha()
 
     if latest_sha != local_sha:
-        print("检测到代码更新，开始下载变更的文件...")
-
+        print("检测到更新，开始下载变更的文件...")
         added_modified, deleted = get_changed_files(local_sha, latest_sha)
-
         # 下载新增和修改的文件
         for file in added_modified:
             download_file(file)
-
         # 删除仓库中已删除的文件
         for file in deleted:
             delete_local_file(file)
