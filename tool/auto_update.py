@@ -66,7 +66,7 @@ def download_file(file_path):
     raw_url = f"https://raw.githubusercontent.com/{OWNER}/{REPO}/{BRANCH}/{file_path}"
     save_path = os.path.join(DOWNLOAD_DIR, file_path)
 
-    # os.makedirs(os.path.dirname(save_path), exist_ok=True)  # 确保目录存在
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)  # 确保目录存在
 
     response = requests.get(raw_url)
     if response.status_code == 200:
