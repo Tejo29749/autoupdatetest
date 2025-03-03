@@ -7,7 +7,13 @@ OWNER = "Tejo29749"  # 仓库所有者，如 "torvalds"
 REPO = "autoupdatetest"  # 仓库名
 BRANCH = "main"  # 监测的分支
 LOCAL_SHA_FILE = "latest_sha.json"  # 存储最新 SHA
-DOWNLOAD_DIR = "repo_files"  # 下载目录
+
+# 获取脚本所在目录的上一级路径
+DOWNLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
+# 确保路径是绝对路径
+DOWNLOAD_DIR = os.path.abspath(DOWNLOAD_DIR)
+# DOWNLOAD_DIR = "repo_files"  # 下载目录
 
 # GitHub API URLs
 COMMITS_URL = f"https://api.github.com/repos/{OWNER}/{REPO}/commits"
