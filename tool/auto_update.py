@@ -79,8 +79,8 @@ def download_file(file_path):
 def delete_local_file(file_path):
     """删除本地已被仓库移除的文件"""
     local_path = os.path.join(DOWNLOAD_DIR, file_path)
-    if local_path.exists():
-        local_path.unlink()
+    if os.path.exists(local_path):
+        os.remove(local_path)
         print(f"🗑️ 已删除本地文件: {file_path}")
 
 
