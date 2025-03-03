@@ -53,7 +53,9 @@ def get_changed_files(old_sha, new_sha):
 
     if response.status_code == 200:
         files = response.json().get("files", [])
-        return [file["filename"] for file in files]
+        added_modified = [f["filename"] for f in files if f["status"] in ("added", "modified")]
+        deleted = [f["filename"] for f in files if f["status"] == "removed"]
+        return added_modified, deleted
     else:
         print("获取变更文件失败:", response.json())
         return []
@@ -74,6 +76,13 @@ def download_file(file_path):
     else:
         print(f"下载失败: {file_path}，错误: {response.status_code}")
 
+def delete_local_file(file_path):
+    """删除本地已被仓库移除的文件"""
+    local_path = os.path.join(DOWNLOAD_DIR, file_path)
+    if local_path.exists():
+        local_path.unlink()
+        print(f"🗑️ 已删除本地文件: {file_path}")
+
 
 def main():
     latest_sha = get_latest_commit_sha()
@@ -85,17 +94,28 @@ def main():
     if latest_sha != local_sha:
         print("检测到代码更新，开始下载变更的文件...")
 
-        if local_sha:  # 仅在有本地 SHA 时比对变更文件
-            changed_files = get_changed_files(local_sha, latest_sha)
-            if changed_files:
-                for file in changed_files:
-                    download_file(file)
-            else:
-                print("没有检测到变更的文件。")
-        else:
-            print("本地无记录，首次下载所有文件！")
+        added_modified, deleted = get_changed_files(local_sha, latest_sha)
+
+        # 下载新增和修改的文件
+        for file in added_modified:
+            download_file(file)
+
+        # 删除仓库中已删除的文件
+        for file in deleted:
+            delete_local_file(file)
+
+        # if local_sha:  # 仅在有本地 SHA 时比对变更文件
+        #     changed_files = get_changed_files(local_sha, latest_sha)
+        #     if changed_files:
+        #         for file in changed_files:
+        #             download_file(file)
+        #     else:
+        #         print("没有检测到变更的文件。")
+        # else:
+        #     print("本地无记录，首次下载所有文件！")
 
         save_local_sha(latest_sha)
+        print("✅ 仓库同步完成！")
     else:
         print("代码无变化")
 
